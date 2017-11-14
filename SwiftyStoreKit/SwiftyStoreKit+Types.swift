@@ -46,7 +46,7 @@ public struct PurchaseDetails {
 
 //Conform to this protocol to provide custom receipt validator
 public protocol ReceiptValidator {
-	func validate(receipt: String, password autoRenewPassword: String?, completion: @escaping (VerifyReceiptResult) -> Void)
+	func validate(receiptData: Data, completion: @escaping (VerifyReceiptResult) -> Void)
 }
 
 // Payment transaction
@@ -77,15 +77,17 @@ public struct RestoreResults {
     public let restoreFailedPurchases: [(SKError, String?)]
 }
 
+public typealias ShouldAddStorePaymentHandler = (_ payment: SKPayment, _ product: SKProduct) -> Bool
+
 // MARK: Receipt verification
 
 // Info for receipt returned by server
 public typealias ReceiptInfo = [String: AnyObject]
 
-// Refresh receipt result
-public enum RefreshReceiptResult {
+// Fetch receipt result
+public enum FetchReceiptResult {
     case success(receiptData: Data)
-    case error(error: Error)
+    case error(error: ReceiptError)
 }
 
 // Verify receipt result

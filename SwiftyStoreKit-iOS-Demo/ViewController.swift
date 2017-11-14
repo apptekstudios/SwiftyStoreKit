@@ -116,9 +116,8 @@ class ViewController: UIViewController {
     
     func verifyReceipt(completion: @escaping (VerifyReceiptResult) -> Void) {
         
-        let appleValidator = AppleReceiptValidator(service: .production)
-        let password = "your-shared-secret"
-        SwiftyStoreKit.verifyReceipt(using: appleValidator, password: password, completion: completion)
+        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: "your-shared-secret")
+        SwiftyStoreKit.verifyReceipt(using: appleValidator, completion: completion)
     }
 
     func verifyPurchase(_ purchase: RegisteredPurchase) {
@@ -209,7 +208,7 @@ extension ViewController {
         case .error(let error):
             print("Purchase Failed: \(error)")
             switch error.code {
-            case .unknown: return alertWithTitle("Purchase failed", message: "Unknown error. Please contact support")
+            case .unknown: return alertWithTitle("Purchase failed", message: error.localizedDescription)
             case .clientInvalid: // client is not allowed to issue the request, etc.
                 return alertWithTitle("Purchase failed", message: "Not allowed to make the payment")
             case .paymentCancelled: // user cancelled the request, etc.
